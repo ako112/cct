@@ -36,15 +36,15 @@ def clean_channel_name(channel_name):
     cleaned_name = re.sub(r'(\D*)(\d+)', lambda m: m.group(1) + str(int(m.group(2))), cleaned_name)  # 将数字前面的部分保留，数字转换为整数
     return cleaned_name.upper()  # 转换为大写
 
-def fetch_channels(url):
-    # 直接读取本地文件 1tv.txt，忽略传入的 URL
+def fetch_local_channels(local_file):
+    # 读取本地直播源文件
     channels = OrderedDict()
     try:
-        with open("1tv.txt", "r", encoding="utf-8") as f:
+        with open(local_file, "r", encoding="utf-8") as f:
             lines = f.readlines()
         is_m3u = any(line.startswith("#EXTINF") for line in lines[:15])
         source_type = "m3u" if is_m3u else "txt"
-        logging.info(f"读取本地文件 1tv.txt 成功，判断为{source_type}格式")
+        logging.info(f"读取本地文件 {local_file} 成功，判断为{source_type}格式")
 
         if is_m3u:
             channels.update(parse_m3u_lines(lines))
@@ -53,9 +53,34 @@ def fetch_channels(url):
 
         if channels:
             categories = ", ".join(channels.keys())
-            logging.info(f"本地文件 1tv.txt 成功，包含频道分类: {categories}")
+            logging.info(f"本地文件 {local_file} 成功，包含频道分类: {categories}")
     except Exception as e:
-        logging.error(f"读取本地文件 1tv.txt 失败❌, Error: {e}")
+        logging.error(f"读取本地文件 {local_file} 失败❌, Error: {e}")
+
+    return channels
+
+def fetch_remote_channels(url):
+    # 从指定URL抓取频道列表
+    channels = OrderedDict()
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        response.encoding = 'utf-8'
+        lines = response.text.split("\n")
+        is_m3u = any(line.startswith("#EXTINF") for line in lines[:15])
+        source_type = "m3u" if is_m3u else "txt"
+        logging.info(f"url: {url} 成功，判断为{source_type}格式")
+
+        if is_m3u:
+            channels.update(parse_m3u_lines(lines))
+        else:
+            channels.update(parse_txt_lines(lines))
+
+        if channels:
+            categories = ", ".join(channels.keys())
+            logging.info(f"url: {url} 成功，包含频道分类: {categories}")
+    except requests.RequestException as e:
+        logging.error(f"url: {url} 失败❌, Error: {e}")
 
     return channels
 
@@ -128,17 +153,6 @@ def match_channels(template_channels, all_channels):
 
     return matched_channels
 
-def filter_source_urls(template_file):
-    # 读取模板文件并直接调用 fetch_channels 获取频道信息
-    template_channels = parse_template(template_file)
-    all_channels = OrderedDict()
-    # 直接调用 fetch_channels，不使用 source_urls
-    fetched_channels = fetch_channels(None)  # 参数 url 不再使用
-    merge_channels(all_channels, fetched_channels)
-
-    matched_channels = match_channels(template_channels, all_channels)
-    return matched_channels, template_channels
-
 def merge_channels(target, source):
     # 合并两个频道字典
     for category, channel_list in source.items():
@@ -146,6 +160,24 @@ def merge_channels(target, source):
             target[category].extend(channel_list)
         else:
             target[category] = channel_list
+
+def filter_source_urls(template_file):
+    # 读取模板文件，合并本地和远程直播源
+    template_channels = parse_template(template_file)
+    all_channels = OrderedDict()
+
+    # 读取本地直播源
+    local_channels = fetch_local_channels("1tv.txt")
+    merge_channels(all_channels, local_channels)
+
+    # 读取远程直播源
+    source_urls = config.source_urls
+    for url in source_urls:
+        remote_channels = fetch_remote_channels(url)
+        merge_channels(all_channels, remote_channels)
+
+    matched_channels = match_channels(template_channels, all_channels)
+    return matched_channels, template_channels
 
 def is_ipv6(url):
     # 判断URL是否为IPv6地址
@@ -218,3 +250,15 @@ def add_url_suffix(url, index, total_urls, ip_version):
     suffix = f"${ip_version}" if total_urls == 1 else f"${ip_version}•线路{index}"
     base_url = url.split('$', 1)[0] if '$' in url else url
     return f"{base_url}{suffix}"
+
+def write_to_files(f_m3u, f_txt, category, channel_name, index, new_url):
+    # 写入M3U和TXT文件
+    logo_url = f"https://gitee.com/IIII-9306/PAV/raw/master/logos/{channel_name}.png"
+    f_m3u.write(f"#EXTINF:-1 tvg-id=\"{index}\" tvg-name=\"{channel_name}\" tvg-logo=\"{logo_url}\" group-title=\"{category}\",{channel_name}\n")
+    f_m3u.write(new_url + "\n")
+    f_txt.write(f"{channel_name},{new_url}\n")
+
+if __name__ == "__main__":
+    template_file = "demo.txt"
+    channels, template_channels = filter_source_urls(template_file)
+    updateChannelUrlsM3U(channels, template_channels)
