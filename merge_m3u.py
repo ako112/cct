@@ -27,12 +27,16 @@ def test_remote_source(url, timeout=5):
         print(f"远程直播源文件 {url} 不可用，错误: {e}")
         return False
 
-# 下载远程直播源文件
+# 下载远程直播源文件（只处理 M3U 和 TXT 格式）
 def download_remote_sources(remote_sources):
     downloaded_files = []
     for i, url in enumerate(remote_sources):
         # 跳过注释掉的 URL
         if url.strip().startswith("#"):
+            continue
+        # 只处理 M3U 和 TXT 格式的直播源
+        if not (url.lower().endswith(".m3u") or url.lower().endswith(".txt")):
+            print(f"跳过非 M3U/TXT 格式的 URL: {url}")
             continue
         # 测试直播源文件可用性
         if not test_remote_source(url):
