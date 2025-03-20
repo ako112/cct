@@ -155,7 +155,7 @@ announcements = [
     {
         "channel": "更新日期",
         "entries": [
-            {"name": None,"url": "https://gitee.com/IIII-9306/PAV/raw/master/Updatetime.mp4","logo": "https://gitee.com/IIII-9306/PAV/raw/master/Updatetime.jpeg"}
+            {"name": None,"url": "https://github.com/ako112/cct/blob/main/pic/Updatetime.mp4","logo": "https://gitee.com/IIII-9306/PAV/raw/master/Updatetime.jpeg"}
         ]
     }
 ]
