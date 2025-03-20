@@ -30,7 +30,28 @@ def parse_template(template_file):
                     template_channels[current_category].append(channel_name)
 
     return template_channels
+def fetch_channels(url):
+    channels = OrderedDict()
+    try:
+        # 直接读取本地文件
+        with open("1tv.txt", "r", encoding="utf-8") as f:
+            lines = f.readlines()
+        is_m3u = any(line.startswith("#EXTINF") for line in lines[:15])
+        source_type = "m3u" if is_m3u else "txt"
+        logging.info(f"读取本地文件 1tv.txt 成功，判断为{source_type}格式")
 
+        if is_m3u:
+            channels.update(parse_m3u_lines(lines))
+        else:
+            channels.update(parse_txt_lines(lines))
+
+        if channels:
+            categories = ", ".join(channels.keys())
+            logging.info(f"本地文件 1tv.txt 成功，包含频道分类: {categories}")
+    except Exception as e:
+        logging.error(f"读取本地文件 1tv.txt 失败❌, Error: {e}")
+
+    return channels
 
 # 数据清洗函数
 def clean_channel_name(channel_name):
