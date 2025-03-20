@@ -1,5 +1,5 @@
 更新日期,#genre#
-2025-03-20,https://gitee.com/IIII-9306/PAV/raw/master/Updatetime.mp4
+2025-03-21,https://github.com/ako112/cct/blob/main/pic/Updatetime.mp4
 央视频道,#genre#
 CCTV1,http://[2409:8087:5e00:24::1e]:6060/200000001898/460000089800010011/1.m3u8?$IPV6•线路1
 CCTV1,http://[2409:8087:5e00:24::1f]:6060/ZTE_CMS/00000001000000060000000000000131/index.m3u8$IPV6•线路2
