@@ -6,6 +6,7 @@
 > [IPV4直播加速URL1](https://gh.tryxd.cn/https://raw.githubusercontent.com/XlllllX/IPTV/main/live_ipv4.m3u)
 > 
 > [IPV4直播加速URL2](https://gh.llkk.cc/https://github.com/XlllllX/IPTV/blob/main/live_ipv4.m3u)
+> [IPV4直播加速URL3](https://gh.tryxd.cn/https://github.com/ako112/cct/blob/main/pic/Updatetime.mp4)
 > 
 > [IPV6直播加速URL1](https://gh.tryxd.cn/https://raw.githubusercontent.com/XlllllX/IPTV/main/live_ipv6.m3u)
 > 
