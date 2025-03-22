@@ -53,13 +53,11 @@ yy封神榜,http://127.0.0.1:35456/yy//1382797534
 纪晓岚hy,http://127.0.0.1:35456/huya/11342418
 康熙私访hy,http://127.0.0.1:35456/huya/11342418
 新水浒hy,http://127.0.0.1:35456/huya/11342384
-tv组合,#genre#
+临时cc频道,#genre#
 ccta1h,video://http://m.haoqu99.com/1/cctv1.html
 ccta1a,http://xiaoya.crccxw.top:35455/gaoma/cctv1.m3u8
 CCTa1j,http://1752e145z8.vicp.fun:35455/gaoma/cctv1.m3u8
 CCTa1ipv6,http://[2409:8087:1:20:20::2c]/otttv.bj.chinamobile.com/PLTV/88888888/224/3221226895/1.m3u8?GuardEncType=2&accountinfo=%7E%7EV2.0%7EI0Rkc6neBYgfpoJ1yud8Fw%7E_eNUbgU9sJGUcVVduOMKhafLvQUgE_zlz_7pvDimJNPpqgHe3PQ5GNQoO-yUgA8C%2CEND
-ccta1高码1,http://127.0.0.1:35456/gaoma/cctv1.m3u8
-CCTVa1cdn,http://127.0.0.1:35456/itv/5000000004000002226.m3u8?cdn=FifastbLive
 CCTVa1iptv,http://36.105.100.208:35455/gaoma/cctv1.m3u8
 CCTVa1不清晰,http://live.nctv.top/IQGYpiryt/migu.php?id=cctv1
 CCTVa1app,video://https://iptv.tvfix.org/play/cctv1hd
@@ -80,8 +78,11 @@ SiTV-欢笑剧场-4K,http://127.0.0.1:35456/itv/5000000007000010001.m3u8?cdn=bes
 北京纪实科教8K,https://gdcucc.v1.mk/gdcucc/brtv8k.m3u8
 ccta8k36m,http://127.0.0.1:35456/gaoma/cctv8k_36m.m3u8
 ccta8k120m,http://127.0.0.1:35456/gaoma/cctv8k_120m.m3u8
+cc高码频道,#genre#
 CCTV1咪咕,
 CCTV1咪咕1,
+ccta1高码1,http://127.0.0.1:35456/gaoma/cctv1.m3u8
+CCTVa1cdn,http://127.0.0.1:35456/itv/5000000004000002226.m3u8?cdn=FifastbLive
 ccta2高码,http://127.0.0.1:35456/gaoma/cctv2.m3u8
 ccta3高码,http://127.0.0.1:35456/gaoma/cctv3.m3u8
 ccta4高码,http://127.0.0.1:35456/gaoma/cctv4.m3u8
