@@ -1,4 +1,4 @@
-直播电视剧,#genre#
+4直播电视剧,#genre#
 宰相刘罗锅yy,
 a宰相刘罗锅yy,
 天龙八部yy,
@@ -60,7 +60,7 @@ ccta8k36m,
 ccta8k120m,
 CCTV1咪咕,
 CCTV1咪咕1,
-cc高码频道,#genre#
+cc码频道,#genre#
 ccta1高码1,
 ccta1高码,
 ccta2高码,
@@ -79,7 +79,7 @@ ccta15高码,
 ccta16高码,
 ccta17高码,
 cgtnar高码,
-cgtndoc-高码,
+cgtndoc高码,
 cgtnen高码,
 cgtnfr高码,
 cgtnru高码,
