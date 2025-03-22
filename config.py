@@ -146,7 +146,6 @@ url_blacklist = [
     "2409:8087:2001:20:2800:0:df6e:eb25]:80",
     "stream1.freetv.fun",
     "chinamobile",
-    "gaoma",
     "[2409:8087:2001:20:2800:0:df6e:eb27]"
 ]
 
