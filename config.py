@@ -8,8 +8,9 @@ source_urls = [
     "https://ghproxy.net/https://raw.githubusercontent.com/ssili126/tv/main/itvlist.m3u",
    "https://raw.githubusercontent.com/fanmingming/live/refs/heads/main/tv/m3u/ipv6.m3u",
     "https://raw.githubusercontent.com/qingwen07/awesome-iptv/main/tvbox_live_all.txt"
-    ########################################################################################################
-    #"http://tv.nezha.su:35455/tv.m3u",
+   ######################################################################################################  
+   "https://raw.githubusercontent.com/qingwen07/awesome-iptv/main/tvbox_live_all.txt",
+   "http://tv.nezha.su:35455/tv.m3u",
    "https://tvcdn.kkmz.top/tv.m3u",
 "http://live.wqwqwq.sbs/tv.m3u",
 "https://iptv.b2og.com/txt/fmml_ipv6.txt",
