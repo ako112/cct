@@ -58,6 +58,7 @@ ccta1h,video://http://m.haoqu99.com/1/cctv1.html
 ccta1a,http://xiaoya.crccxw.top:35455/gaoma/cctv1.m3u8
 CCTa1j,http://1752e145z8.vicp.fun:35455/gaoma/cctv1.m3u8
 CCTa1ipv6,http://[2409:8087:1:20:20::2c]/otttv.bj.chinamobile.com/PLTV/88888888/224/3221226895/1.m3u8?GuardEncType=2&accountinfo=%7E%7EV2.0%7EI0Rkc6neBYgfpoJ1yud8Fw%7E_eNUbgU9sJGUcVVduOMKhafLvQUgE_zlz_7pvDimJNPpqgHe3PQ5GNQoO-yUgA8C%2CEND
+https://la1.wqwqwq.sbs/tv.m3u
 CCTVa1iptv,http://36.105.100.208:35455/gaoma/cctv1.m3u8
 CCTVa1不清晰,http://live.nctv.top/IQGYpiryt/migu.php?id=cctv1
 CCTVa1app,video://https://iptv.tvfix.org/play/cctv1hd
