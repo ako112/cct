@@ -79,8 +79,8 @@ SiTV-欢笑剧场-4K,http://127.0.0.1:35456/itv/5000000007000010001.m3u8?cdn=bes
 ccta8k36m,http://127.0.0.1:35456/gaoma/cctv8k_36m.m3u8
 ccta8k120m,http://127.0.0.1:35456/gaoma/cctv8k_120m.m3u8
 cc高码频道,#genre#
-CCTV1咪咕,
-CCTV1咪咕1,
+CCTV1咪咕,http://ttkx.cc:55/lib/kx2024.txt
+CCTV1咪咕1,http://ttkx.cc:1658/公开源454/mg9.php?id=cctv1
 ccta1高码1,http://127.0.0.1:35456/gaoma/cctv1.m3u8
 CCTVa1cdn,http://127.0.0.1:35456/itv/5000000004000002226.m3u8?cdn=FifastbLive
 ccta2高码,http://127.0.0.1:35456/gaoma/cctv2.m3u8
