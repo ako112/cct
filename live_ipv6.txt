@@ -1,5 +1,5 @@
 更新日期,#genre#
-2025-03-25,https://github.com/ako112/cct/blob/main/pic/Updatetime.mp4
+2025-03-26,https://github.com/ako112/cct/blob/main/pic/Updatetime.mp4
 4直播电视剧,#genre#
 临时cc频道,#genre#
 CCTa1ipv6,http://[2409:8087:1:20:20::2c]/otttv.bj.chinamobile.com/PLTV/88888888/224/3221226895/1.m3u8?GuardEncType=2&accountinfo=%7E%7EV2.0%7EI0Rkc6neBYgfpoJ1yud8Fw%7E_eNUbgU9sJGUcVVduOMKhafLvQUgE_zlz_7pvDimJNPpqgHe3PQ5GNQoO-yUgA8C%2CEND$IPV6
