@@ -1,5 +1,5 @@
 #EXTM3U x-tvg-url="https://epg.v1.mk/fy.xml","http://epg.51zmt.top:8000/e.xml","https://epg.pw/xmltv/epg_CN.xml","https://epg.pw/xmltv/epg_HK.xml","https://epg.pw/xmltv/epg_TW.xml"
-#EXTINF:-1 tvg-id="1" tvg-name="2025-03-28" tvg-logo="https://github.com/ako112/cct/blob/main/pic/Updatetime.jpeg" group-title="更新日期",2025-03-28
+#EXTINF:-1 tvg-id="1" tvg-name="2025-03-29" tvg-logo="https://github.com/ako112/cct/blob/main/pic/Updatetime.jpeg" group-title="更新日期",2025-03-29
 https://github.com/ako112/cct/blob/main/pic/Updatetime.mp4
 #EXTINF:-1 tvg-id="1" tvg-name="CCTa1ipv6" tvg-logo="https://gitee.com/IIII-9306/PAV/raw/master/logos/CCTa1ipv6.png" group-title="临时cc频道",CCTa1ipv6
 http://[2409:8087:1:20:20::2c]/otttv.bj.chinamobile.com/PLTV/88888888/224/3221226895/1.m3u8?GuardEncType=2&accountinfo=%7E%7EV2.0%7EI0Rkc6neBYgfpoJ1yud8Fw%7E_eNUbgU9sJGUcVVduOMKhafLvQUgE_zlz_7pvDimJNPpqgHe3PQ5GNQoO-yUgA8C%2CEND$IPV6
