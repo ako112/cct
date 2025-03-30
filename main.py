@@ -166,16 +166,7 @@ def sort_and_filter_urls(urls, written_urls):
     written_urls.update(sorted_urls)
     return sorted_urls
 
-def add_url_suffix(url, index, total_urls, ip_version):
-    suffix = f"${ip_version}" if total_urls == 1 else f"${ip_version}•线路{index}"
-    base_url = url.split('$', 1)[0] if '$' in url else url
-    return f"{base_url}{suffix}"
 
-def write_to_files(f_m3u, f_txt, category, channel_name, index, new_url):
-    logo_url = f"https://gitee.com/IIII-9306/PAV/raw/master/logos/{channel_name}.png"
-    f_m3u.write(f"#EXTINF:-1 tvg-id=\"{index}\" tvg-name=\"{channel_name}\" tvg-logo=\"{logo_url}\" group-title=\"{category}\",{channel_name}\n")
-    f_m3u.write(new_url + "\n")
-    f_txt.write(f"{channel_name},{new_url}\n")
 
 def updateChannelUrlsM3U(channels, template_channels):
     written_urls_ipv4 = set()
