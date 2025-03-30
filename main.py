@@ -132,6 +132,12 @@ def merge_channels(target, source):
         else:
             target[category] = channel_list
 
+
+def write_to_files(f_m3u, f_txt, category, channel_name, index, new_url):
+    logo_url = f"https://gitee.com/IIII-9306/PAV/raw/master/logos/{channel_name}.png"
+    f_m3u.write(f"#EXTINF:-1 tvg-id=\"{index}\" tvg-name=\"{channel_name}\" tvg-logo=\"{logo_url}\" group-title=\"{category}\",{channel_name}\n")
+    f_m3u.write(new_url + "\n")
+    f_txt.write(f"{channel_name},{new_url}\n")
 def filter_source_urls(template_file):
     template_channels = parse_template(template_file)
     all_channels = OrderedDict()
