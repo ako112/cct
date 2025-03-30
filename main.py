@@ -4,11 +4,13 @@ import logging
 from collections import OrderedDict
 from datetime import datetime
 from urllib.parse import urlparse
-import config  # 确保 config.py 存在并正确配置
+import config
 
 # 日志记录
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s',
-                    handlers=[logging.FileHandler("function.log", "w", encoding="utf-8"), logging.StreamHandler()])
+logging.basicConfig(level=logging.INFO, 
+                   format='%(asctime)s - %(levelname)s - %(message)s',
+                   handlers=[logging.FileHandler("function.log", "w", encoding="utf-8"), 
+                            logging.StreamHandler()])
 
 def parse_template(template_file):
     template_channels = OrderedDict()
@@ -74,7 +76,7 @@ def fetch_remote_channels(url):
 def parse_m3u_lines(lines):
     channels = OrderedDict()
     current_category = None
-    channel_name = None  # 添加变量以保存频道名
+    channel_name = None
     for line in lines:
         line = line.strip()
         if line.startswith("#EXTINF"):
@@ -166,10 +168,10 @@ def sort_and_filter_urls(urls, written_urls):
     written_urls.update(sorted_urls)
     return sorted_urls
 
+# 主要修改点：去除后缀添加逻辑
 def add_url_suffix(url, index, total_urls, ip_version):
-    suffix = f"${ip_version}" if total_urls == 1 else f"${ip_version}•线路{index}"
-    base_url = url.split('$', 1)[0] if '$' in url else url
-    return f"{base_url}{suffix}"
+    """ 直接返回原始URL """
+    return url.split('$', 1)[0] if '$' in url else url
 
 def write_to_files(f_m3u, f_txt, category, channel_name, index, new_url):
     logo_url = f"https://gitee.com/IIII-9306/PAV/raw/master/logos/{channel_name}.png"
@@ -181,46 +183,35 @@ def updateChannelUrlsM3U(channels, template_channels):
     written_urls_ipv4 = set()
     written_urls_ipv6 = set()
     current_date = datetime.now().strftime("%Y-%m-%d")
+    
     for group in config.announcements:
         for announcement in group['entries']:
             if announcement['name'] is None:
                 announcement['name'] = current_date
+                
     with open("live_ipv4.m3u", "w", encoding="utf-8") as f_m3u_ipv4, \
-            open("live_ipv4.txt", "w", encoding="utf-8") as f_txt_ipv4, \
-            open("live_ipv6.m3u", "w", encoding="utf-8") as f_m3u_ipv6, \
-            open("live_ipv6.txt", "w", encoding="utf-8") as f_txt_ipv6:
+         open("live_ipv4.txt", "w", encoding="utf-8") as f_txt_ipv4, \
+         open("live_ipv6.m3u", "w", encoding="utf-8") as f_m3u_ipv6, \
+         open("live_ipv6.txt", "w", encoding="utf-8") as f_txt_ipv6:
+        
+        # 写入文件头
         f_m3u_ipv4.write(f"""#EXTM3U x-tvg-url={",".join(f'"{epg_url}"' for epg_url in config.epg_urls)}\n""")
         f_m3u_ipv6.write(f"""#EXTM3U x-tvg-url={",".join(f'"{epg_url}"' for epg_url in config.epg_urls)}\n""")
+        
+        # 写入公告信息
         for group in config.announcements:
             f_txt_ipv4.write(f"{group['channel']},#genre#\n")
             f_txt_ipv6.write(f"{group['channel']},#genre#\n")
             for announcement in group['entries']:
-                f_m3u_ipv4.write(f"""#EXTINF:-1 tvg-id="1" tvg-name="{announcement['name']}" tvg-logo="{announcement['logo']}" group-title="{group['channel']}",{announcement['name']}\n""")
-                f_m3u_ipv4.write(f"{announcement['url']}\n")
+                f_m3u_ipv4.write(f"""#EXTINF:-1 tvg-id="1" tvg-name="{announcement['name']}" tvg-logo="{announcement['logo']}" group-title="{group['channel']}",{announcement['name']}\n{announcement['url']}\n""")
                 f_txt_ipv4.write(f"{announcement['name']},{announcement['url']}\n")
-                f_m3u_ipv6.write(f"""#EXTINF:-1 tvg-id="1" tvg-name="{announcement['name']}" tvg-logo="{announcement['logo']}" group-title="{group['channel']}",{announcement['name']}\n""")
-                f_m3u_ipv6.write(f"{announcement['url']}\n")
+                f_m3u_ipv6.write(f"""#EXTINF:-1 tvg-id="1" tvg-name="{announcement['name']}" tvg-logo="{announcement['logo']}" group-title="{group['channel']}",{announcement['name']}\n{announcement['url']}\n""")
                 f_txt_ipv6.write(f"{announcement['name']},{announcement['url']}\n")
+        
+        # 写入频道数据
         for category, channel_list in template_channels.items():
             f_txt_ipv4.write(f"{category},#genre#\n")
             f_txt_ipv6.write(f"{category},#genre#\n")
             if category in channels:
                 for channel_name in channel_list:
-                    if channel_name in channels[category]:
-                        sorted_urls_ipv4 = [url for url in sort_and_filter_urls(channels[category][channel_name], written_urls_ipv4) if not is_ipv6(url)]
-                        sorted_urls_ipv6 = [url for url in sort_and_filter_urls(channels[category][channel_name], written_urls_ipv6) if is_ipv6(url)]
-                        total_urls_ipv4 = len(sorted_urls_ipv4)
-                        total_urls_ipv6 = len(sorted_urls_ipv6)
-                        for index, url in enumerate(sorted_urls_ipv4, start=1):
-                            new_url = add_url_suffix(url, index, total_urls_ipv4, "IPV4")
-                            write_to_files(f_m3u_ipv4, f_txt_ipv4, category, channel_name, index, new_url)
-                        for index, url in enumerate(sorted_urls_ipv6, start=1):
-                            new_url = add_url_suffix(url, index, total_urls_ipv6, "IPV6")
-                            write_to_files(f_m3u_ipv6, f_txt_ipv6, category, channel_name, index, new_url)
-        f_txt_ipv4.write("\n")
-        f_txt_ipv6.write("\n")
-
-if __name__ == "__main__":
-    template_file = "demo.txt"
-    channels, template_channels = filter_source_urls(template_file)
-    updateChannelUrlsM3U(channels, template_channels)
+                    if channel_name in
