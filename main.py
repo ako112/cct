@@ -234,33 +234,68 @@ def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[Order
     matched_channels = match_channels(template_channels, all_channels)
     return matched_channels, template_channels
 
-def write_to_file(output_file: str, channels: OrderedDict) -> None:
+def is_ipv6(url: str) -> bool:
     """
-    将合并后的频道信息写入文件。
+    检查URL是否为IPv6地址。
     
-    :param output_file: 输出文件路径
+    :param url: 要检查的URL
+    :return: 如果URL是IPv6地址则返回True,否则返回False
+    """
+    return re.match(r'^http:\/\/\[[0-9a-fA-F:]+\]', url) is not None
+
+def write_to_files(channels: OrderedDict) -> None:
+    """
+    将合并后的频道信息写入IPv4和IPv6的TXT和M3U文件。
+    
     :param channels: 合并后的频道 OrderedDict
     """
-    seen = defaultdict(set)
-    with open(output_file, "w", encoding="utf-8") as f:
+    seen_ipv4 = defaultdict(set)
+    seen_ipv6 = defaultdict(set)
+
+    with open("ipv4.txt", "w", encoding="utf-8") as f_ipv4_txt, \
+         open("ipv6.txt", "w", encoding="utf-8") as f_ipv6_txt, \
+         open("ipv4.m3u", "w", encoding="utf-8") as f_ipv4_m3u, \
+         open("ipv6.m3u", "w", encoding="utf-8") as f_ipv6_m3u:
+
+        f_ipv4_m3u.write("#EXTM3U\n")
+        f_ipv6_m3u.write("#EXTM3U\n")
+
         for category, channel_list in channels.items():
-            f.write(f"{category},#genre#\n")
+            f_ipv4_txt.write(f"{category},#genre#\n")
+            f_ipv6_txt.write(f"{category},#genre#\n")
+
             for channel_name, channel_urls in channel_list.items():
-                unique_urls = []
+                unique_ipv4_urls = []
+                unique_ipv6_urls = []
+
                 for url in channel_urls:
-                    if url not in seen[channel_name]:
-                        seen[channel_name].add(url)
-                        unique_urls.append(url)
-                for url in unique_urls:
-                    f.write(f"{channel_name},{url}\n")
-        f.write("\n")
+                    if is_ipv6(url):
+                        if url not in seen_ipv6[channel_name]:
+                            seen_ipv6[channel_name].add(url)
+                            unique_ipv6_urls.append(url)
+                    else:
+                        if url not in seen_ipv4[channel_name]:
+                            seen_ipv4[channel_name].add(url)
+                            unique_ipv4_urls.append(url)
+
+                for url in unique_ipv4_urls:
+                    f_ipv4_txt.write(f"{channel_name},{url}\n")
+                    f_ipv4_m3u.write(f'#EXTINF:-1 group-title="{category}",{channel_name}\n')
+                    f_ipv4_m3u.write(f'{url}\n')
+
+                for url in unique_ipv6_urls:
+                    f_ipv6_txt.write(f"{channel_name},{url}\n")
+                    f_ipv6_m3u.write(f'#EXTINF:-1 group-title="{category}",{channel_name}\n')
+                    f_ipv6_m3u.write(f'{url}\n')
+
+        f_ipv4_txt.write("\n")
+        f_ipv6_txt.write("\n")
 
 if __name__ == "__main__":
     template_file = "demo.txt"
     source_urls_file = "source_urls.txt"  # 本地文件，包含多个在线直播源的URL
-    output_file = "merged_channels.txt"  # 输出文件路径
 
     channels, _ = filter_source_urls(template_file, source_urls_file)
-    write_to_file(output_file, channels)
+    write_to_files(channels)
 
-    logging.info(f"合并后的频道已写入文件: {output_file}")
+    logging.info("合并后的频道已写入IPv4和IPv6的TXT和M3U文件")
