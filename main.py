@@ -1,7 +1,7 @@
 import re
 import requests
 import logging
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 from datetime import datetime
 from urllib.parse import urlparse
 from typing import List, Dict, Tuple, Optional
@@ -15,6 +15,26 @@ logging.basicConfig(
         logging.StreamHandler()
     ]
 )
+
+def normalize_channel_name(channel_name: str) -> str:
+    """
+    标准化频道名称，处理CCTV等特殊情况。
+    
+    :param channel_name: 原始频道名称
+    :return: 标准化后的频道名称
+    """
+    # 转换为大写并去除特殊字符
+    normalized = channel_name.upper()
+    normalized = re.sub(r'[$「」-]', '', normalized)
+    normalized = re.sub(r'\s+', '', normalized)
+    
+    # 处理CCTV特殊情况
+    if normalized.startswith("CCTV"):
+        normalized = re.sub(r'(\D*)(\d+)', lambda m: m.group(1) + str(int(m.group(2))), normalized)
+        if "综合" in normalized:
+            normalized = "CCTV1"
+    
+    return normalized
 
 def parse_template(template_file: str) -> OrderedDict:
     """
@@ -34,7 +54,7 @@ def parse_template(template_file: str) -> OrderedDict:
                     template_channels[current_category] = []
                 elif current_category:
                     channel_name = line.split(",")[0].strip()
-                    template_channels[current_category].append(channel_name)
+                    template_channels[current_category].append(normalize_channel_name(channel_name))
     return template_channels
 
 def clean_channel_name(channel_name: str) -> str:
@@ -125,7 +145,7 @@ def parse_m3u_lines(lines: List[str]) -> OrderedDict:
         elif line and not line.startswith("#"):
             channel_url = line.strip()
             if current_category and channel_name:
-                channels[current_category].append((channel_name, channel_url))
+                channels[current_category].append((normalize_channel_name(channel_name), channel_url))
     return channels
 
 def parse_txt_lines(lines: List[str]) -> OrderedDict:
@@ -151,9 +171,9 @@ def parse_txt_lines(lines: List[str]) -> OrderedDict:
                 channel_urls = match.group(2).strip().split('#')
                 for channel_url in channel_urls:
                     channel_url = channel_url.strip()
-                    channels[current_category].append((channel_name, channel_url))
+                    channels[current_category].append((normalize_channel_name(channel_name), channel_url))
             elif line:
-                channels[current_category].append((line, ''))
+                channels[current_category].append((normalize_channel_name(line), ''))
     return channels
 
 def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) -> OrderedDict:
@@ -221,11 +241,17 @@ def write_to_file(output_file: str, channels: OrderedDict) -> None:
     :param output_file: 输出文件路径
     :param channels: 合并后的频道 OrderedDict
     """
+    seen = defaultdict(set)
     with open(output_file, "w", encoding="utf-8") as f:
         for category, channel_list in channels.items():
             f.write(f"{category},#genre#\n")
             for channel_name, channel_urls in channel_list.items():
+                unique_urls = []
                 for url in channel_urls:
+                    if url not in seen[channel_name]:
+                        seen[channel_name].add(url)
+                        unique_urls.append(url)
+                for url in unique_urls:
                     f.write(f"{channel_name},{url}\n")
         f.write("\n")
 
