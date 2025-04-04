@@ -1,12 +1,14 @@
 ip_version_priority = "ipv6"
 
 source_urls = [
-   
+   "https://iptv.catvod.com/tv.m3u",
+   "https://web.banye.tech:7777/tvbus/yogurtTv.txt",
     "https://live.zhoujie218.top/tv/iptv4.txt",
     "https://raw.githubusercontent.com/ssili126/tv/main/itvlist.txt",
     "https://live.zbds.top/tv/iptv4.txt",
     "https://ghproxy.net/https://raw.githubusercontent.com/ssili126/tv/main/itvlist.m3u",
    "https://raw.githubusercontent.com/fanmingming/live/refs/heads/main/tv/m3u/ipv6.m3u"
+   
    
    ######################################################################################################  
    
@@ -15,7 +17,8 @@ source_urls = [
 
 url_blacklist = [
     "epg.pw/stream/",
-    
+    "https://cdn.iptv8k.top/",
+   "http://150.158.112.123/",
     
     "[2409:8087:2001:2800:0:df6e:eb27]"
 ]
