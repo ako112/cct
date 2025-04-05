@@ -19,7 +19,7 @@ url_blacklist = [
     "epg.pw/stream/",
     "https://cdn.iptv8k.top/",
    "http://150.158.112.123/",
-    
+    "https://www.freetv.top/",
     "[2409:8087:2001:2800:0:df6e:eb27]"
 ]
 
