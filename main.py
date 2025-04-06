@@ -96,9 +96,11 @@ def fetch_local_channels(local_file: str) -> OrderedDict:
 
 # 从远程URL获取频道
 def fetch_remote_channels(url: str) -> OrderedDict:
+    """从远程URL获取频道。"""
     channels = OrderedDict()
+    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
     try:
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         response.raise_for_status()
         response.encoding = 'utf-8'
         lines = response.text.split("\n")
