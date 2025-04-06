@@ -17,18 +17,10 @@ logging.basicConfig(
 )
 
 def normalize_channel_name(channel_name: str) -> str:
-    """
-    标准化频道名称，处理CCTV等特殊情况。
-    
-    :param channel_name: 原始频道名称
-    :return: 标准化后的频道名称
-    """
-    # 转换为大写并去除特殊字符
     normalized = channel_name.upper()
     normalized = re.sub(r'[$「」-]', '', normalized)
     normalized = re.sub(r'\s+', '', normalized)
     
-    # 处理CCTV特殊情况
     if normalized.startswith("CCTV"):
         normalized = re.sub(r'(\D*)(\d+)', lambda m: m.group(1) + str(int(m.group(2))), normalized)
         if "综合" in normalized:
@@ -37,12 +29,6 @@ def normalize_channel_name(channel_name: str) -> str:
     return normalized
 
 def parse_template(template_file: str) -> OrderedDict:
-    """
-    解析模板文件并返回按类别分组的频道 OrderedDict。
-    
-    :param template_file: 模板文件路径
-    :return: 按类别分组的频道 OrderedDict
-    """
     template_channels = OrderedDict()
     current_category = None
     with open(template_file, "r", encoding="utf-8") as f:
@@ -58,24 +44,12 @@ def parse_template(template_file: str) -> OrderedDict:
     return template_channels
 
 def clean_channel_name(channel_name: str) -> str:
-    """
-    清理频道名称,删除特殊字符并转换为大写。
-    
-    :param channel_name: 原始频道名称
-    :return: 清理后的频道名称
-    """
     cleaned_name = re.sub(r'[$「」-]', '', channel_name)
     cleaned_name = re.sub(r'\s+', '', cleaned_name)
     cleaned_name = re.sub(r'(\D*)(\d+)', lambda m: m.group(1) + str(int(m.group(2))), cleaned_name)
     return cleaned_name.upper()
 
 def fetch_local_channels(local_file: str) -> OrderedDict:
-    """
-    从本地文件(支持m3u或txt格式)获取频道。
-    
-    :param local_file: 本地文件路径
-    :return: 按类别分组的频道 OrderedDict
-    """
     channels = OrderedDict()
     try:
         with open(local_file, "r", encoding="utf-8") as f:
@@ -95,12 +69,6 @@ def fetch_local_channels(local_file: str) -> OrderedDict:
     return channels
 
 def fetch_remote_channels(url: str) -> OrderedDict:
-    """
-    从远程URL(支持m3u或txt格式)获取频道。
-    
-    :param url: 获取频道的URL
-    :return: 按类别分组的频道 OrderedDict
-    """
     channels = OrderedDict()
     try:
         response = requests.get(url)
@@ -114,6 +82,10 @@ def fetch_remote_channels(url: str) -> OrderedDict:
             channels.update(parse_m3u_lines(lines))
         else:
             channels.update(parse_txt_lines(lines))
+        
+        # 过滤掉黑名单中的URL
+        channels = filter_blacklisted_channels(channels)
+
         if channels:
             categories = ", ".join(channels.keys())
             logging.info(f"URL: {url} 处理成功,包含频道分类: {categories}")
@@ -121,13 +93,16 @@ def fetch_remote_channels(url: str) -> OrderedDict:
         logging.error(f"获取URL: {url} 失败❌, 错误: {e}")
     return channels
 
+def filter_blacklisted_channels(channels: OrderedDict) -> OrderedDict:
+    """过滤掉黑名单中的频道"""
+    filtered_channels = OrderedDict()
+    for category, channel_list in channels.items():
+        filtered_channels[category] = [(name, url) for name, url in channel_list if url not in BLACKLISTED_URLS]
+        if not filtered_channels[category]:  # 如果过滤后没有频道，移除该类别
+            del filtered_channels[category]
+    return filtered_channels
+
 def parse_m3u_lines(lines: List[str]) -> OrderedDict:
-    """
-    将m3u格式的行解析为频道 OrderedDict。
-    
-    :param lines: m3u文件的行列表
-    :return: 按类别分组的频道 OrderedDict
-    """
     channels = OrderedDict()
     current_category = None
     channel_name = None
@@ -149,12 +124,6 @@ def parse_m3u_lines(lines: List[str]) -> OrderedDict:
     return channels
 
 def parse_txt_lines(lines: List[str]) -> OrderedDict:
-    """
-    将txt格式的行解析为频道 OrderedDict。
-    
-    :param lines: txt文件的行列表
-    :return: 按类别分组的频道 OrderedDict
-    """
     channels = OrderedDict()
     current_category = None
     for line in lines:
@@ -177,13 +146,6 @@ def parse_txt_lines(lines: List[str]) -> OrderedDict:
     return channels
 
 def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) -> OrderedDict:
-    """
-    将模板中的频道与所有可用频道匹配。
-    
-    :param template_channels: 模板频道的 OrderedDict
-    :param all_channels: 所有可用频道的 OrderedDict
-    :return: 匹配的频道 OrderedDict
-    """
     matched_channels = OrderedDict()
     for category, channel_list in template_channels.items():
         matched_channels[category] = OrderedDict()
@@ -195,12 +157,6 @@ def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) ->
     return matched_channels
 
 def merge_channels(target: OrderedDict, source: OrderedDict) -> None:
-    """
-    将源频道合并到目标频道中。
-    
-    :param target: 要合并到的目标 OrderedDict
-    :param source: 要合并的源 OrderedDict
-    """
     for category, channel_list in source.items():
         if category in target:
             target[category].extend(channel_list)
@@ -208,26 +164,29 @@ def merge_channels(target: OrderedDict, source: OrderedDict) -> None:
             target[category] = channel_list
 
 def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[OrderedDict, OrderedDict]:
-    """
-    根据模板从各种来源过滤和匹配频道。
-    
-    :param template_file: 模板文件路径
-    :param source_urls_file: 包含源URL的本地文件路径
-    :return: 匹配的频道和模板频道的元组
-    """
     template_channels = parse_template(template_file)
     all_channels = OrderedDict()
     
+    # 分开直播源和黑名单
+    live_urls = []
+    blacklisted_urls = []
+    with open(source_urls_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and line.startswith("#"):
+                blacklisted_urls.append(line[1:].strip())  # 以#开头的行视为黑名单
+            else:
+                live_urls.append(line)  # 其他视为直播源
+
+    global BLACKLISTED_URLS
+    BLACKLISTED_URLS = set(blacklisted_urls)  # 将黑名单转换为集合用于加快查询
+
     # 读取本地直播源文件
     local_channels = fetch_local_channels("1tv.txt")
     merge_channels(all_channels, local_channels)
     
-    # 读取包含源URL的本地文件
-    with open(source_urls_file, "r", encoding="utf-8") as f:
-        source_urls = [line.strip() for line in f if line.strip()]
-    
     # 读取并合并远程直播源
-    for url in source_urls:
+    for url in live_urls:
         remote_channels = fetch_remote_channels(url)
         merge_channels(all_channels, remote_channels)
     
@@ -235,20 +194,9 @@ def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[Order
     return matched_channels, template_channels
 
 def is_ipv6(url: str) -> bool:
-    """
-    检查URL是否为IPv6地址。
-    
-    :param url: 要检查的URL
-    :return: 如果URL是IPv6地址则返回True,否则返回False
-    """
     return re.match(r'^http:\/\/\[[0-9a-fA-F:]+\]', url) is not None
 
 def write_to_files(channels: OrderedDict) -> None:
-    """
-    将合并后的频道信息写入IPv4和IPv6的TXT和M3U文件。
-    
-    :param channels: 合并后的频道 OrderedDict
-    """
     seen_ipv4 = defaultdict(set)
     seen_ipv6 = defaultdict(set)
 
