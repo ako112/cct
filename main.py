@@ -161,12 +161,30 @@ def parse_txt_lines(lines: List[str]) -> OrderedDict:
                 channels[current_category].append((normalize_channel_name(line), ''))
     return channels
 
+# 合并频道
+def merge_channels(target: OrderedDict, source: OrderedDict) -> None:
+    for category, channel_list in source.items():
+        if category not in target:
+            target[category] = []
+
+        for channel_name, url in channel_list:
+            found = False
+            if category in target:
+                for existing_name, existing_url in target[category]:
+                    if existing_name == channel_name and existing_url == url:
+                        found = True
+                        break
+            if not found:
+                if category not in target:
+                    target[category] = []
+                target[category].append((channel_name, url))
+
 # 匹配频道
 def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) -> OrderedDict:
     matched_channels = OrderedDict()
-    for category, channel_list in template_channels.items():
+    for category, template_channel_list in template_channels.items():
         matched_channels[category] = OrderedDict()
-        for channel_name in channel_list:
+        for channel_name in template_channel_list:
             for online_category, online_channel_list in all_channels.items():
                 for online_channel_name, online_channel_url in online_channel_list:
                     if online_channel_url in BLACKLIST:
@@ -174,19 +192,6 @@ def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) ->
                     if channel_name == online_channel_name:
                         matched_channels[category].setdefault(channel_name, []).append(online_channel_url)
     return matched_channels
-
-# 合并频道
-def merge_channels(target: OrderedDict, source: OrderedDict) -> None:
-    for category, channel_list in source.items():
-        if category not in target:
-            target[category] = OrderedDict()
-
-        for channel_name, urls in channel_list:  # 修改这里，source 的 channel_list 是 (name, url) 元组列表
-            if category not in target or channel_name not in target[category]:
-                target[category][channel_name] = [urls]
-            else:
-                target[category][channel_name].append(urls)
-                target[category][channel_name] = list(set(target[category][channel_name]))
 
 def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[OrderedDict, OrderedDict]:
     global BLACKLIST
