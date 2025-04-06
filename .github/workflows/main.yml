@@ -22,3 +22,4 @@ jobs:
         git add ipv4.m3u ipv4.txt ipv6.m3u ipv6.txt
         git commit -m "自动更新IPv4和IPv6直播源文件" || echo "No changes to commit"
         git push origin main
+ 
