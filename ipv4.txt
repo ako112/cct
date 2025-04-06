@@ -989,7 +989,7 @@ CCTV4K,http://live.wqwqwq.sbs/gaoma/cctv4k.m3u8
 河南卫视,http://101.66.198.110:9901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=0&authid=0
 河南卫视,http://101.66.198.61:9901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=0&authid=0
 河南卫视,http://101.66.198.222:9901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=0&authid=0
-河南卫视,http://tvcdn.stream3.hndt.com/tv/65c4a6d5017e1000b2b6ea2500000000_transios/playlist.m3u8?wsSecret=647a4d9c0de09fc65c8d05ea822bc97d&wsTime=1743915625
+河南卫视,http://tvcdn.stream3.hndt.com/tv/65c4a6d5017e1000b2b6ea2500000000_transios/playlist.m3u8?wsSecret=be742b95102086ed8976d026f7059791&wsTime=1743926431
 河南卫视,http://live.nctv.top/KLJHDS/hntv.php?id=hnws
 河南卫视,http://113.15.109.216:59901/tsfile/live/0139_1.m3u8?key=txiptv&playlive=1&authid=0
 河南卫视,http://112.123.243.37:50085/tsfile/live/0121_1.m3u8?key=txiptv&playlive=0&authid=0
