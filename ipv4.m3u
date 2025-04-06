@@ -2384,6 +2384,8 @@ http://aktv-stream.m16tv.cfd/stream/aktv/mytvsuper18/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",POPC
 http://aktv-stream.m16tv.cfd/stream/aktv/popc/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",ROCKACTION
+http://209.141.54.128:50007/4gtv-live138/index.m3u8
+#EXTINF:-1 group-title="港澳台",ROCKACTION
 http://aktv-stream.m16tv.cfd/stream/aktv/rockaction/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",TVBPLUS
 tvbus://8jCU4JsfqXoWBGiUr8Vgpd4XvRMGzF63iC6KMYxDYpbH8i4EnX
@@ -2414,6 +2416,8 @@ tvbus://6j2t4XGKn5ncHtxQoK4zHL3Y7fi9pPgyyVa1MMmhZy4tBXhw3BofeWnQjexxP
 #EXTINF:-1 group-title="港澳台",TVN
 http://aktv-stream.m16tv.cfd/stream/aktv/tvn/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",中天新聞台
+http://209.141.54.128:50007/4gtv-4gtv009/index.m3u8
+#EXTINF:-1 group-title="港澳台",中天新聞台
 tvbus://8VKmFVcxk7MUb4mGFQDs7RP9ZJb24Cwy4e1ePqSSZn31zKPNGe
 #EXTINF:-1 group-title="港澳台",中天新聞台
 tvbus://75uwi7EEM5iu6dSsJ3STkooq8LiLUhSdNJQEvuvJ4zNPRYqLMQ
@@ -2433,6 +2437,8 @@ http://aktv-stream.m16tv.cfd/stream/aktv/null-6/AKTV.m3u8
 http://aktv-stream.m16tv.cfd/stream/aktv/null-15/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",娛樂新聞台(HK)
 http://aktv-stream.m16tv.cfd/stream/aktv/hk/AKTV.m3u8
+#EXTINF:-1 group-title="港澳台",寰宇新聞台
+http://209.141.54.128:50007/litv-longturn14/index.m3u8
 #EXTINF:-1 group-title="港澳台",寰宇新聞台
 tvbus://8FW6CQgdnmzqUsnZBVnpPoLbscW8U42TfDdzMB2mRw2oNWCi6n
 #EXTINF:-1 group-title="港澳台",寰宇新聞台
@@ -2566,6 +2572,8 @@ http://aktv-stream.m16tv.cfd/stream/aktv3/null-2/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",CELESTIALMOVIES
 http://aktv-stream.m16tv.cfd/stream/astro_a1/celestialmovies/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",CINEMAWORLD
+http://209.141.54.128:50007/4gtv-live069/index.m3u8
+#EXTINF:-1 group-title="港澳台",CINEMAWORLD
 http://aktv-stream.m16tv.cfd/stream/astro_a1/ch31/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",FIGHTSPORTS
 http://aktv-stream.m16tv.cfd/stream/astro_a1/ch85/AKTV.m3u8
@@ -2608,25 +2616,49 @@ http://aktv-stream.m16tv.cfd/stream/astro_a1/ch87/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",朝鮮恩情台
 http://aktv-stream.m16tv.cfd/stream/nknews/null/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",ELTV生活英語台
+http://209.141.54.128:50007/litv-longturn20/index.m3u8
+#EXTINF:-1 group-title="港澳台",ELTV生活英語台
 http://aktv-stream.m16tv.cfd/stream/taiwan/eltv/AKTV.m3u8
+#EXTINF:-1 group-title="港澳台",三立新聞INEWS
+http://209.141.54.128:50007/iNEWS/index.m3u8
+#EXTINF:-1 group-title="港澳台",三立新聞INEWS
+http://209.141.54.128:50007/4gtv-live089/index.m3u8
 #EXTINF:-1 group-title="港澳台",三立新聞INEWS
 http://aktv-stream.m16tv.cfd/stream/taiwan/inews/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",中視
+http://209.141.54.128:50007/4gtv-4gtv040/index.m3u8
+#EXTINF:-1 group-title="港澳台",中視
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-4/AKTV.m3u8
+#EXTINF:-1 group-title="港澳台",中視新聞
+http://209.141.54.128:50007/4gtv-4gtv074/index.m3u8
 #EXTINF:-1 group-title="港澳台",中視新聞
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-13/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",台視
+http://209.141.54.128:50007/4gtv-4gtv066/index.m3u8
+#EXTINF:-1 group-title="港澳台",台視
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-3/AKTV.m3u8
+#EXTINF:-1 group-title="港澳台",台視新聞
+http://209.141.54.128:50007/4gtv-4gtv051/index.m3u8
 #EXTINF:-1 group-title="港澳台",台視新聞
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-15/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",華視
+http://209.141.54.128:50007/4gtv-4gtv041/index.m3u8
+#EXTINF:-1 group-title="港澳台",華視
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-5/AKTV.m3u8
+#EXTINF:-1 group-title="港澳台",龍華偶像台
+http://209.141.54.128:50007/litv-longturn12/index.m3u8
 #EXTINF:-1 group-title="港澳台",龍華偶像台
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-9/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",龍華日韓台
+http://209.141.54.128:50007/litv-longturn11/index.m3u8
+#EXTINF:-1 group-title="港澳台",龍華日韓台
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-7/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",龍華經典台
+http://209.141.54.128:50007/litv-longturn21/index.m3u8
+#EXTINF:-1 group-title="港澳台",龍華經典台
 http://aktv-stream.m16tv.cfd/stream/taiwan/null/AKTV.m3u8
+#EXTINF:-1 group-title="港澳台",龍華電影台
+http://209.141.54.128:50007/litv-longturn03/index.m3u8
 #EXTINF:-1 group-title="港澳台",龍華電影台
 http://aktv-stream.m16tv.cfd/stream/taiwan/null-8/AKTV.m3u8
 #EXTINF:-1 group-title="港澳台",ASTROFOOTBALL
