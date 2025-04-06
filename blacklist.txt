@@ -1,2 +1,2 @@
-https://cdn.iptv8k.top/
-http://tv.nezha.su:35455/
+cdn.iptv8k.top
+tv.nezha.su:35455
