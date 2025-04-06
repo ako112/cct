@@ -1,3 +1,4 @@
+https://url.freenet.ddns-ip.net/tvboxbeta
 http://209.141.54.128:50007/?type=txt
 https://web.banye.tech:7777/tvbus/yogurtTv.txt
 https://live.zhoujie218.top/tv/iptv4.txt
