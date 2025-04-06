@@ -187,7 +187,12 @@ def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) ->
         for channel_name in template_channel_list:
             for online_category, online_channel_list in all_channels.items():
                 for online_channel_name, online_channel_url in online_channel_list:
-                    if online_channel_url in BLACKLIST:
+                    is_blacklisted = False
+                    for blacklisted_item in BLACKLIST:
+                        if blacklisted_item in online_channel_url:
+                            is_blacklisted = True
+                            break
+                    if is_blacklisted:
                         continue
                     if channel_name == online_channel_name:
                         matched_channels[category].setdefault(channel_name, []).append(online_channel_url)
@@ -239,7 +244,12 @@ def write_to_files(channels: OrderedDict) -> None:
                 unique_ipv6_urls = []
 
                 for url in channel_urls:
-                    if url in BLACKLIST:
+                    is_blacklisted = False
+                    for blacklisted_item in BLACKLIST:
+                        if blacklisted_item in url:
+                            is_blacklisted = True
+                            break
+                    if is_blacklisted:
                         continue
                     if is_ipv6(url):
                         if url not in seen_ipv6[channel_name]:
