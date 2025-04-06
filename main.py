@@ -98,9 +98,13 @@ def fetch_local_channels(local_file: str) -> OrderedDict:
 def fetch_remote_channels(url: str) -> OrderedDict:
     """从远程URL获取频道。"""
     channels = OrderedDict()
-    headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        'Referer': 'https://cad.com/',  # 尝试添加 Referer 头部
+        'Accept': '*/*'
+    }
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers=headers, timeout=10)  # 添加超时时间
         response.raise_for_status()
         response.encoding = 'utf-8'
         lines = response.text.split("\n")
@@ -116,7 +120,7 @@ def fetch_remote_channels(url: str) -> OrderedDict:
         if channels:
             categories = ", ".join(channels.keys())
             logging.info(f"URL: {url} 处理成功,包含频道分类: {categories}")
-    except requests.RequestException as e:
+    except requests.exceptions.RequestException as e:
         logging.error(f"获取URL: {url} 失败❌, 错误: {e}")
     return channels
 
