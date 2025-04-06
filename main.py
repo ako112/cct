@@ -5,7 +5,7 @@ from collections import OrderedDict, defaultdict
 from datetime import datetime
 from typing import List, Dict, Tuple, Optional
 
-# 日志配置 (保持不变)
+# 日志配置
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -37,7 +37,7 @@ def load_blacklist(blacklist_file: str) -> set:
         logging.error(f"加载黑名单文件 {blacklist_file} 失败: {e}")
     return blacklist
 
-# 标准化频道名称 (保持不变)
+# 标准化频道名称
 def normalize_channel_name(channel_name: str) -> str:
     normalized = channel_name.upper()
     normalized = re.sub(r'[$「」-]', '', normalized)
@@ -50,7 +50,7 @@ def normalize_channel_name(channel_name: str) -> str:
 
     return normalized
 
-# 解析模板文件 (保持不变)
+# 解析模板文件
 def parse_template(template_file: str) -> OrderedDict:
     template_channels = OrderedDict()
     current_category = None
@@ -66,14 +66,14 @@ def parse_template(template_file: str) -> OrderedDict:
                     template_channels[current_category].append(normalize_channel_name(channel_name))
     return template_channels
 
-# 清理频道名称 (保持不变)
+# 清理频道名称
 def clean_channel_name(channel_name: str) -> str:
     cleaned_name = re.sub(r'[$「」-]', '', channel_name)
     cleaned_name = re.sub(r'\s+', '', cleaned_name)
     cleaned_name = re.sub(r'(\D*)(\d+)', lambda m: m.group(1) + str(int(m.group(2))), cleaned_name)
     return cleaned_name.upper()
 
-# 从本地文件获取频道 (保持不变)
+# 从本地文件获取频道
 def fetch_local_channels(local_file: str) -> OrderedDict:
     channels = OrderedDict()
     try:
@@ -94,7 +94,7 @@ def fetch_local_channels(local_file: str) -> OrderedDict:
         logging.error(f"读取本地文件 {local_file} 失败❌, 错误: {e}")
     return channels
 
-# 从远程URL获取频道 (保持不变)
+# 从远程URL获取频道
 def fetch_remote_channels(url: str) -> OrderedDict:
     channels = OrderedDict()
     try:
@@ -118,7 +118,7 @@ def fetch_remote_channels(url: str) -> OrderedDict:
         logging.error(f"获取URL: {url} 失败❌, 错误: {e}")
     return channels
 
-# 解析m3u格式 (保持不变)
+# 解析m3u格式
 def parse_m3u_lines(lines: List[str]) -> OrderedDict:
     channels = OrderedDict()
     current_category = None
@@ -139,7 +139,7 @@ def parse_m3u_lines(lines: List[str]) -> OrderedDict:
                 channels[current_category].append((normalize_channel_name(channel_name), channel_url))
     return channels
 
-# 解析txt格式 (保持不变)
+# 解析txt格式
 def parse_txt_lines(lines: List[str]) -> OrderedDict:
     channels = OrderedDict()
     current_category = None
@@ -161,7 +161,7 @@ def parse_txt_lines(lines: List[str]) -> OrderedDict:
                 channels[current_category].append((normalize_channel_name(line), ''))
     return channels
 
-# 匹配频道 (修改以使用全局 BLACKLIST)
+# 匹配频道
 def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) -> OrderedDict:
     matched_channels = OrderedDict()
     for category, channel_list in template_channels.items():
@@ -169,28 +169,25 @@ def match_channels(template_channels: OrderedDict, all_channels: OrderedDict) ->
         for channel_name in channel_list:
             for online_category, online_channel_list in all_channels.items():
                 for online_channel_name, online_channel_url in online_channel_list:
-                    # 检查是否是黑名单中的频道
                     if online_channel_url in BLACKLIST:
                         continue
-
                     if channel_name == online_channel_name:
                         matched_channels[category].setdefault(channel_name, []).append(online_channel_url)
     return matched_channels
 
-# 合并频道 (保持不变)
+# 合并频道
 def merge_channels(target: OrderedDict, source: OrderedDict) -> None:
     for category, channel_list in source.items():
         if category not in target:
             target[category] = OrderedDict()
 
-        for channel_name, urls in channel_list.items():
-            if channel_name not in target[category]:
-                target[category][channel_name] = list(set(urls))  # 去重
+        for channel_name, urls in channel_list:  # 修改这里，source 的 channel_list 是 (name, url) 元组列表
+            if category not in target or channel_name not in target[category]:
+                target[category][channel_name] = [urls]
             else:
-                target[category][channel_name].extend(urls)
-                target[category][channel_name] = list(set(target[category][channel_name]))  # 再次去重
+                target[category][channel_name].append(urls)
+                target[category][channel_name] = list(set(target[category][channel_name]))
 
-# 过滤源URLs (修改以在加载时加载黑名单)
 def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[OrderedDict, OrderedDict]:
     global BLACKLIST
     BLACKLIST = load_blacklist(BLACKLIST_FILE)  # 在开始时加载黑名单
@@ -211,11 +208,11 @@ def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[Order
     matched_channels = match_channels(template_channels, all_channels)
     return matched_channels, template_channels
 
-# 检查是否是IPv6地址 (保持不变)
+# 检查是否是IPv6地址
 def is_ipv6(url: str) -> bool:
     return re.match(r'^http:\/\/\[[0-9a-fA-F:]+\]', url) is not None
 
-# 写入文件 (修改以使用全局 BLACKLIST)
+# 写入文件
 def write_to_files(channels: OrderedDict) -> None:
     seen_ipv4 = defaultdict(set)
     seen_ipv6 = defaultdict(set)
@@ -228,18 +225,17 @@ def write_to_files(channels: OrderedDict) -> None:
         f_ipv4_m3u.write("#EXTM3U\n")
         f_ipv6_m3u.write("#EXTM3U\n")
 
-        for category, channel_list in channels.items():
+        for category, channel_dict in channels.items():
             f_ipv4_txt.write(f"{category},#genre#\n")
             f_ipv6_txt.write(f"{category},#genre#\n")
 
-            for channel_name, channel_urls in channel_list.items():
+            for channel_name, channel_urls in channel_dict.items():
                 unique_ipv4_urls = []
                 unique_ipv6_urls = []
 
                 for url in channel_urls:
                     if url in BLACKLIST:
-                        continue  # 跳过黑名单中的URL
-
+                        continue
                     if is_ipv6(url):
                         if url not in seen_ipv6[channel_name]:
                             seen_ipv6[channel_name].add(url)
