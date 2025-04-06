@@ -229,73 +229,132 @@ def filter_source_urls(template_file: str, source_urls_file: str) -> Tuple[Order
     # 读取并合并远程直播源
     for url in source_urls:
         remote_channels = fetch_remote_channels(url)
+import logging
+import re
+import requests
+from collections import OrderedDict
+from typing import List, Dict, Tuple
+
+# 日志记录配置
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+def load_blacklist(file_path: str) -> set:
+    """从文件加载黑名单，返回一个黑名单集合。"""
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return {line.strip() for line in f if line.strip()}
+    except Exception as e:
+        logging.error(f"读取黑名单文件失败❌，错误: {e}")
+        return set()
+
+def normalize_channel_name(name: str) -> str:
+    """标准化频道名称，去除特殊字符，确保格式一致。"""
+    return re.sub(r'\W+', ' ', name).strip().lower()
+
+def clean_channel_name(name: str) -> str:
+    """清理频道名称，增加可读性。"""
+    return ' '.join(name.split()).strip()
+
+def parse_template(template_file: str) -> OrderedDict:
+    """解析模板文件，将频道按类别分组。"""
+    channels = OrderedDict()
+    with open(template_file, "r", encoding="utf-8") as f:
+        current_category = None
+        for line in f:
+            line = line.strip()
+            if line.startswith("#"):
+                current_category = line[1:].strip()
+                channels[current_category] = []
+            elif current_category:
+                channels[current_category].append(clean_channel_name(line))
+    return channels
+
+def fetch_local_channels(file_path: str) -> OrderedDict:
+    """从本地文件读取频道。"""
+    channels = OrderedDict()
+    with open(file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            name, url = line.strip().split(",", 1)
+            channels[clean_channel_name(name)] = url.strip()
+    return channels
+
+def fetch_remote_channels(url: str) -> OrderedDict:
+    """从远程 URL 获取频道。"""
+    channels = OrderedDict()
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+        for line in response.text.splitlines():
+            line = line.strip()
+            if line and not line.startswith("#"):
+                name, url = line.split(",", 1)
+                channels[clean_channel_name(name)] = url.strip()
+    except Exception as e:
+        logging.error(f"无法获取远程频道，URL: {url} 错误: {e}")
+    return channels
+
+def match_channels(template_channels: OrderedDict, all_channels: OrderedDict, blacklist: set) -> OrderedDict:
+    """将模板中的频道与所有可用频道匹配，并过滤黑名单中的频道。"""
+    matched_channels = OrderedDict()
+    for category, channel_list in template_channels.items():
+        matched_channels[category] = OrderedDict()
+        for channel_name in channel_list:
+            for online_channel_name, online_channel_url in all_channels.items():
+                # 检查频道URL是否在黑名单中
+                if online_channel_url in blacklist:
+                    logging.info(f"频道 {online_channel_name} 的URL {online_channel_url} 被黑名单过滤，跳过。")
+                    continue
+                if channel_name == online_channel_name:
+                    matched_channels[category][channel_name] = online_channel_url
+                    break
+    return matched_channels
+
+def merge_channels(all_channels: OrderedDict, new_channels: OrderedDict):
+    """将新频道合并到总频道列表中。"""
+    for channel_name, url in new_channels.items():
+        if channel_name not in all_channels:
+            all_channels[channel_name] = url
+
+def write_to_files(channels: OrderedDict):
+    """将合并后的频道写入文件。"""
+    with open("output.txt", "w", encoding="utf-8") as f:
+        for category, channel_list in channels.items():
+            f.write(f"#{category}\n")
+            for channel_name, url in channel_list.items():
+                f.write(f"{channel_name},{url}\n")
+                
+    logging.info("频道已写入输出文件.")
+
+def filter_source_urls(template_file: str, source_urls_file: str, blacklist_file: str) -> Tuple[OrderedDict, OrderedDict]:
+    """根据模板从各种来源过滤和匹配频道，并应用黑名单。"""
+    template_channels = parse_template(template_file)
+    all_channels = OrderedDict()
+    
+    # 读取黑名单
+    blacklist = load_blacklist(blacklist_file)
+
+    # 读取本地直播源文件
+    local_channels = fetch_local_channels("1tv.txt")  # 本地文件名应已知
+    merge_channels(all_channels, local_channels)
+    
+    # 读取包含源URL的本地文件
+    with open(source_urls_file, "r", encoding="utf-8") as f:
+        source_urls = [line.strip() for line in f if line.strip()]
+    
+    # 读取并合并远程直播源
+    for url in source_urls:
+        remote_channels = fetch_remote_channels(url)
         merge_channels(all_channels, remote_channels)
     
-    matched_channels = match_channels(template_channels, all_channels)
+    matched_channels = match_channels(template_channels, all_channels, blacklist)
     return matched_channels, template_channels
-
-def is_ipv6(url: str) -> bool:
-    """
-    检查URL是否为IPv6地址。
-    
-    :param url: 要检查的URL
-    :return: 如果URL是IPv6地址则返回True,否则返回False
-    """
-    return re.match(r'^http:\/\/\[[0-9a-fA-F:]+\]', url) is not None
-
-def write_to_files(channels: OrderedDict) -> None:
-    """
-    将合并后的频道信息写入IPv4和IPv6的TXT和M3U文件。
-    
-    :param channels: 合并后的频道 OrderedDict
-    """
-    seen_ipv4 = defaultdict(set)
-    seen_ipv6 = defaultdict(set)
-
-    with open("ipv4.txt", "w", encoding="utf-8") as f_ipv4_txt, \
-         open("ipv6.txt", "w", encoding="utf-8") as f_ipv6_txt, \
-         open("ipv4.m3u", "w", encoding="utf-8") as f_ipv4_m3u, \
-         open("ipv6.m3u", "w", encoding="utf-8") as f_ipv6_m3u:
-
-        f_ipv4_m3u.write("#EXTM3U\n")
-        f_ipv6_m3u.write("#EXTM3U\n")
-
-        for category, channel_list in channels.items():
-            f_ipv4_txt.write(f"{category},#genre#\n")
-            f_ipv6_txt.write(f"{category},#genre#\n")
-
-            for channel_name, channel_urls in channel_list.items():
-                unique_ipv4_urls = []
-                unique_ipv6_urls = []
-
-                for url in channel_urls:
-                    if is_ipv6(url):
-                        if url not in seen_ipv6[channel_name]:
-                            seen_ipv6[channel_name].add(url)
-                            unique_ipv6_urls.append(url)
-                    else:
-                        if url not in seen_ipv4[channel_name]:
-                            seen_ipv4[channel_name].add(url)
-                            unique_ipv4_urls.append(url)
-
-                for url in unique_ipv4_urls:
-                    f_ipv4_txt.write(f"{channel_name},{url}\n")
-                    f_ipv4_m3u.write(f'#EXTINF:-1 group-title="{category}",{channel_name}\n')
-                    f_ipv4_m3u.write(f'{url}\n')
-
-                for url in unique_ipv6_urls:
-                    f_ipv6_txt.write(f"{channel_name},{url}\n")
-                    f_ipv6_m3u.write(f'#EXTINF:-1 group-title="{category}",{channel_name}\n')
-                    f_ipv6_m3u.write(f'{url}\n')
-
-        f_ipv4_txt.write("\n")
-        f_ipv6_txt.write("\n")
 
 if __name__ == "__main__":
     template_file = "demo.txt"
     source_urls_file = "source_urls.txt"  # 本地文件，包含多个在线直播源的URL
+    blacklist_file = "blacklist.txt"  # 黑名单文件路径
 
-    channels, _ = filter_source_urls(template_file, source_urls_file)
+    channels, _ = filter_source_urls(template_file, source_urls_file, blacklist_file)
     write_to_files(channels)
 
-    logging.info("合并后的频道已写入IPv4和IPv6的TXT和M3U文件")
+    logging.info("处理完成！")
