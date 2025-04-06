@@ -1,9 +1,18 @@
 # config.py
 
 # 源 URL 列表：包含多个在线直播源的 URL
-source_urls = [
-    "your_first_remote_url_here",
-    "your_second_remote_url_here",
+source_urls = [   
+"http://209.141.54.128:50007/?type=txt",
+"https://web.banye.tech:7777/tvbus/yogurtTv.txt",
+"https://live.zhoujie218.top/tv/iptv4.txt",
+"https://raw.githubusercontent.com/ssili126/tv/main/itvlist.txt",
+"https://live.zbds.top/tv/iptv4.txt",
+"https://raw.githubusercontent.com/ssili126/tv/main/itvlist.m3u",
+"https://raw.githubusercontent.com/fanmingming/live/refs/heads/main/tv/m3u/ipv6.m3u",
+"https://aktv.space/live.m3u",
+"https://raw.githubusercontent.com/Supprise0901/TVBox_live/main/live.txt",
+"https://m3u.dxjc.pp.ua/proxy/tv3.m3u",
+"https://ehe.serv00.net/tv3.m3u",
     # 可以添加更多 URL
 ]
 
