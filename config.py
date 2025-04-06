@@ -18,7 +18,11 @@ source_urls = [
 
 # EPG (Electronic Program Guide) URL 列表（可选）
 epg_urls = [
-    "your_epg_url_here",
+    "https://epg.v1.mk/fy.xml",
+    "http://epg.51zmt.top:8000/e.xml",
+    "https://epg.pw/xmltv/epg_CN.xml",
+    "https://epg.pw/xmltv/epg_HK.xml",
+    "https://epg.pw/xmltv/epg_TW.xml"
     # 可以添加更多 EPG URL
 ]
 
